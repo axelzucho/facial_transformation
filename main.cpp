@@ -1,17 +1,28 @@
 #include <opencv2/core/core.hpp>
+#include <opencv2/opencv.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <iostream>
 #include <string>
 #include <opencv2/imgproc.hpp>
+#include <dlib/opencv/cv_image.h>
 #include <dlib/image_processing/frontal_face_detector.h>
 #include <dlib/image_processing/render_face_detections.h>
 #include <dlib/image_processing.h>
 #include <dlib/image_io.h>
+#include <dlib/gui_widgets.h>
 
 using namespace dlib;
-using namespace cv;
 using namespace std;
+
+using cv::Mat;
+using cv::Scalar;
+using cv::Rect;
+using cv::WINDOW_AUTOSIZE;
+using cv::namedWindow;
+using cv::waitKey;
+using cv::imread;
+using cv::IMREAD_COLOR;
 
 void show_image(Mat image){
     namedWindow( "Display window", WINDOW_AUTOSIZE ); // Create a window for display.
@@ -26,15 +37,35 @@ void show_image_with_face(Mat image, Rect rect, Scalar color){
     waitKey(0); // Wait for a keystroke in the window
 }
 
-void face_landmark_detector(string path_to_model, dlib::rectangle face_rectangle, string image_path){
+void show_image_with_points(full_object_detection shape, dlib::rectangle face_rectangle, Mat image, int size_x, int size_y){
+    std::vector<image_window::overlay_circle> points;
+    image_window win;
+    win.set_size(size_x,size_y);
+    win.set_title("Detector");
+
+    while (!win.is_closed()) {
+        for (unsigned int n = 0; n < shape.num_parts(); n++) {
+            point pt = shape.part(n);
+            points.push_back(image_window::overlay_circle(pt, 2, rgb_pixel(255, 255, 0)));
+            cout << "Point " << n << ": " << pt.x() << " " << pt.y() << endl;
+        }
+
+        win.clear_overlay();
+        win.set_image(cv_image<bgr_pixel>(image));
+        win.add_overlay(points);
+        win.add_overlay(face_rectangle);
+    }
+}
+
+void face_landmark_detector(string path_to_model, dlib::rectangle face_rectangle, string image_path, Mat image_before){
     shape_predictor sp;
     deserialize(path_to_model) >> sp;
-
     array2d<rgb_pixel> image;
     load_image(image, image_path);
 
     full_object_detection shape = sp(image, face_rectangle);
-    cout << "number of parts: " << shape.num_parts() << endl;
+
+    show_image_with_points(shape, face_rectangle, image_before, 960, 1280);
 }
 
 void read_image(int argc, char** argv, string image_path){
@@ -49,8 +80,8 @@ void read_image(int argc, char** argv, string image_path){
         cout <<  "Could not open or find the image" << std::endl ;
         return;
     }
-    show_image_with_face(image, Rect(350,300,300,330), Scalar(100,130,130));
-    face_landmark_detector("/home/axel/Documents/Proyecto_Reconocimiento/facial_transformation/shape_predictor_68_face_landmarks.dat", dlib::rectangle(350,300,300,330),image_path);
+    //show_image_with_face(image, Rect(360,320,310,310), Scalar(100,130,130));
+    face_landmark_detector("/home/axel/Documents/Proyecto_Reconocimiento/facial_transformation/shape_predictor_68_face_landmarks.dat", dlib::rectangle(330,320,640,630),image_path, image);
 }
 
 
