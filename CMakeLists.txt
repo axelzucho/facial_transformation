@@ -8,7 +8,7 @@ project(fr)
 
 set (CMAKE_CXX_STANDARD 11)
 
-include(/home/axel/dlib-19.6/dlib/cmake)
+include(/home/axelzucho/Documents/dlib-19.15/dlib/cmake)
 
  set(SOURCE 	
     )
