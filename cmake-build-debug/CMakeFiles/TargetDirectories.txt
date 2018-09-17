@@ -1,0 +1,6 @@
+/home/axelzucho/Documents/Github/facial_transformation/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/axelzucho/Documents/Github/facial_transformation/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/axelzucho/Documents/Github/facial_transformation/cmake-build-debug/CMakeFiles/fr.dir
+/home/axelzucho/Documents/Github/facial_transformation/cmake-build-debug/dlib_build/CMakeFiles/edit_cache.dir
+/home/axelzucho/Documents/Github/facial_transformation/cmake-build-debug/dlib_build/CMakeFiles/rebuild_cache.dir
+/home/axelzucho/Documents/Github/facial_transformation/cmake-build-debug/dlib_build/CMakeFiles/dlib.dir

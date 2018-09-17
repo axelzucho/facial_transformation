@@ -10,10 +10,10 @@ set (CMAKE_CXX_STANDARD 11)
 
 include(/home/axelzucho/Documents/dlib-19.15/dlib/cmake)
 
- set(SOURCE 	
+ set(SOURCE	
     )
    
- set(HEADERS	
+ set(HEADERS 
     )
 
 # automatic OpenCV finding
