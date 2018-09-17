@@ -75,10 +75,12 @@ void face_landmark_detector(string path_to_model, dlib::rectangle face_rectangle
     load_image(image, image_path);
 
     full_object_detection shape = sp(image, face_rectangle);
-    //show_image_with_points(shape, face_rectangle, image_before, 960, 1280);
+    show_image_with_points(shape, face_rectangle, image_before, 1536, 2048);
     point left_eye = get_average(shape.part(37), shape.part(40));
     point right_eye = get_average(shape.part(43), shape.part(46));
-    Mat new_image = align_image(500,500, left_eye, right_eye, image_before, dlib_rectangle_to_opencv(face_rectangle), 0.3, 0.3);
+    cout << "left eye in x: " << left_eye.x() << " in y: " << left_eye.y() << endl;
+    cout << "right eye in x: " << right_eye.x() << " in y: " << right_eye.y() << endl;
+    Mat new_image = align_image(500,500, point(519,1279), point(671,1021), image_before, dlib_rectangle_to_opencv(face_rectangle), 0.3, 0.3);
     show_image(new_image);
 }
 
@@ -92,14 +94,17 @@ void read_image(int argc, char** argv, string image_path){
         cout <<  "Could not open or find the image" << std::endl;
         return;
     }
-    face_landmark_detector("/home/axelzucho/Documents/Github/facial_transformation/shape_predictor_68_face_landmarks.dat", dlib::rectangle(330,320,640,630),image_path, image);
+    face_landmark_detector("/home/axelzucho/Documents/Github/facial_transformation/shape_predictor_68_face_landmarks.dat", dlib::rectangle(82,782,1141,1563),image_path, image);
 }
 
 Mat align_image(double size_x, double size_y, point left_eye_before, point right_eye_before, Mat image, Rect face, double left_eye_after_x, double left_eye_after_y){
     int dx = right_eye_before.x() - left_eye_before.x();
     int dy = right_eye_before.y() - left_eye_before.y();
 
-    double angle = atan2(dy, dx);
+    cout << "dx = " << dx << "/n";
+    cout << "dy = " << dy << "/n";
+
+    double angle = atan2(dy, dx) * 180 / PI;
 
     double right_eye_after_x = 1 - left_eye_after_x;
     double distance_before = sqrt(dx*dx + dy*dy);
@@ -124,6 +129,6 @@ Mat align_image(double size_x, double size_y, point left_eye_before, point right
 
 
 int main(int argc, char** argv){
-    read_image(argc, argv, "/home/axelzucho/Documents/Github/facial_transformation/images/Cara1.jpeg"); // by default
+    read_image(argc, argv, "/home/axelzucho/Documents/Github/facial_transformation/images/Cara2.jpg"); // by default
     return 0;
 }
