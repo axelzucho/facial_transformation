@@ -14,7 +14,6 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/opencv.hpp>
 
-using namespace dlib;
 using namespace std;
 
 using cv::Mat;
@@ -26,19 +25,25 @@ using cv::waitKey;
 using cv::imread;
 using cv::IMREAD_COLOR;
 
+using dlib::rectangle;
+using dlib::point;
+using dlib::load_image;
+using dlib::image_window;
+using dlib::bgr_pixel;
+using dlib::rgb_pixel;
+using dlib::full_object_detection;
+using dlib::assign_image;
+using dlib::cv_image;
+
 #define PI 3.14159265
 
-Mat align_image(double size_x, double size_y, point left_eye_before, point right_eye_before, Mat image, Rect face, double left_eye_after_x, double left_eye_after_y);
-
-static cv::Rect dlib_rectangle_to_opencv(dlib::rectangle r)
+static cv::Rect dlib_rectangle_to_opencv(rectangle r)
 {
-    return cv::Rect(cv::Point2i(r.left(), r.top()), cv::Point2i(r.right() + 1, r.bottom() + 1));
+    return Rect(cv::Point2i(r.left(), r.top()), cv::Point2i(r.right() + 1, r.bottom() + 1));
 }
 
 point get_average(point left, point right){
     point average((left.x() + right.x())/2, (left.y() + right.y())/2);
-    //average.x((left.x() + right.x())/2);
-    //average.y((left.y() + right.y())/2);
     return average;
 }
 
@@ -48,7 +53,7 @@ void show_image(Mat image){
     waitKey(0); // Wait for a keystroke in the window
 }
 
-void show_image_with_points(full_object_detection shape, dlib::rectangle face_rectangle, Mat image, int size_x, int size_y){
+void show_image_with_points(dlib::full_object_detection shape, rectangle face_rectangle, Mat image, int size_x, int size_y){
     std::vector<image_window::overlay_circle> points;
     image_window win;
     win.set_size(size_x,size_y);
@@ -57,53 +62,40 @@ void show_image_with_points(full_object_detection shape, dlib::rectangle face_re
     while(!win.is_closed()){
         for(unsigned int n = 0; n < shape.num_parts(); n++){
             point pt = shape.part(n);
-            points.push_back(image_window::overlay_circle(pt, 2, rgb_pixel(255, 255, 0)));
-            cout << "Point " << n << ": " << pt.x() << " " << pt.y() << endl;
+            points.push_back(image_window::overlay_circle(pt, 2, dlib::rgb_pixel(255, 255, 0)));
         }
 
         win.clear_overlay();
-        win.set_image(cv_image<bgr_pixel>(image));
+        win.set_image(dlib::cv_image<bgr_pixel>(image));
         win.add_overlay(points);
         win.add_overlay(face_rectangle);
     }
 }
 
-void face_landmark_detector(string path_to_model, dlib::rectangle face_rectangle, string image_path, Mat image_before){
-    shape_predictor sp;
-    deserialize(path_to_model) >> sp;
-    array2d<rgb_pixel> image;
-    load_image(image, image_path);
+void face_landmark_detector(string path_to_model, rectangle face_rectangle, Mat mat_image, full_object_detection* shape){
+    dlib::shape_predictor sp;
+    dlib::deserialize(path_to_model) >> sp;
+    dlib::array2d<rgb_pixel> dlib_image;
+    assign_image(dlib_image, cv_image<rgb_pixel>(mat_image));
 
-    full_object_detection shape = sp(image, face_rectangle);
-    show_image_with_points(shape, face_rectangle, image_before, 1536, 2048);
-    point left_eye = get_average(shape.part(37), shape.part(40));
-    point right_eye = get_average(shape.part(43), shape.part(46));
-    cout << "left eye in x: " << left_eye.x() << " in y: " << left_eye.y() << endl;
-    cout << "right eye in x: " << right_eye.x() << " in y: " << right_eye.y() << endl;
-    Mat new_image = align_image(500,500, point(519,1279), point(671,1021), image_before, dlib_rectangle_to_opencv(face_rectangle), 0.3, 0.3);
-    show_image(new_image);
+    *shape = sp(dlib_image, face_rectangle);
+    show_image_with_points(*shape, face_rectangle, mat_image, 960, 1280);
 }
 
-void read_image(int argc, char** argv, string image_path){
+void read_image(int argc, char** argv, string image_path, Mat* image){
     if(argc > 1){
         image_path = argv[1];
     }
-    Mat image;
-    image = imread(image_path.c_str(), IMREAD_COLOR); // Read the file
-    if(image.empty()){                      // Check for invalid input
+    *image = imread(image_path.c_str(), IMREAD_COLOR); // Read the file
+    if(image->empty()){                      // Check for invalid input
         cout <<  "Could not open or find the image" << std::endl;
         return;
     }
-    face_landmark_detector("/home/axelzucho/Documents/Github/facial_transformation/shape_predictor_68_face_landmarks.dat", dlib::rectangle(82,782,1141,1563),image_path, image);
 }
 
-Mat align_image(double size_x, double size_y, point left_eye_before, point right_eye_before, Mat image, Rect face, double left_eye_after_x, double left_eye_after_y){
+void align_image(double size_x, double size_y, point left_eye_before, point right_eye_before, Mat image, double left_eye_after_x, double left_eye_after_y, Mat* template_image){
     int dx = right_eye_before.x() - left_eye_before.x();
     int dy = right_eye_before.y() - left_eye_before.y();
-
-    cout << "dx = " << dx << "/n";
-    cout << "dy = " << dy << "/n";
-
     double angle = atan2(dy, dx) * 180 / PI;
 
     double right_eye_after_x = 1 - left_eye_after_x;
@@ -118,17 +110,22 @@ Mat align_image(double size_x, double size_y, point left_eye_before, point right
 
     double tx = size_x/2;
     double ty = size_y*left_eye_after_y;
-
     rotation_matrix.at<double>(0,2) += tx - center_between_eyes.x();
     rotation_matrix.at<double>(1,2) += ty - center_between_eyes.y();
-
-    Mat image_after;
-    cv::warpAffine(image, image_after, rotation_matrix, cv::Size(size_x, size_y), cv::INTER_CUBIC);
-    return image_after;
+    cv::warpAffine(image, *template_image, rotation_matrix, cv::Size(size_x, size_y), cv::INTER_CUBIC);
 }
 
 
 int main(int argc, char** argv){
-    read_image(argc, argv, "/home/axelzucho/Documents/Github/facial_transformation/images/Cara2.jpg"); // by default
+    Mat image;
+    read_image(argc, argv, "/home/axelzucho/Documents/Github/facial_transformation/images/Cara1.jpeg", &image); // by default
+    full_object_detection shape;
+    rectangle face(330, 320, 640, 630);
+    face_landmark_detector("/home/axelzucho/Documents/Github/facial_transformation/shape_predictor_68_face_landmarks.dat", face, image, &shape);
+    Mat template_image;
+    point left_eye = get_average(shape.part(37), shape.part(40));
+    point right_eye = get_average(shape.part(43), shape.part(46));
+    align_image(500, 500, left_eye, right_eye, image, 0.3, 0.3, &template_image);
+    show_image(template_image);
     return 0;
 }
