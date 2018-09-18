@@ -20,6 +20,10 @@ namespace extractor {
 
     void example(int argc, char **argv, const string &path_to_image, const string &path_to_model, const rectangle &face,
                  const Size &template_size, const float &left_eye_x, const float &left_eye_y);
-} // namespace extractor
+
+    void hardcoded_example(int argc, char **argv, const string &path_to_image,
+                           const Size &template_size, const float &left_eye_x, const float &left_eye_y);
+
+    } // namespace extractor
 
 #endif

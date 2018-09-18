@@ -109,7 +109,7 @@ namespace extractor {
         cv::Point2f center_between_eyes_f(center_between_eyes.x(), center_between_eyes.y());
         Mat rotation_matrix = cv::getRotationMatrix2D(center_between_eyes_f, angle, scale);
 
-        double tx = (float)size.width / 2;
+        double tx = (float) size.width / 2;
         double ty = size.height * left_eye_after_y;
         rotation_matrix.at<double>(0, 2) += tx - center_between_eyes.x();
         rotation_matrix.at<double>(1, 2) += ty - center_between_eyes.y();
@@ -124,13 +124,23 @@ namespace extractor {
                    &image); // by default
         full_object_detection shape;
         face_landmark_detector(
-               path_to_model, face,
+                path_to_model, face,
                 image, &shape);
         Mat template_image;
         point left_eye = get_average(shape.part(37), shape.part(40));
         point right_eye = get_average(shape.part(43), shape.part(46));
         align_image(template_size, left_eye, right_eye, image, left_eye_x, left_eye_y, &template_image);
         show_image(template_image);
+    }
+
+    void hardcoded_example(int argc, char **argv, const string &path_to_image, const Size &template_size,
+                           const float &left_eye_x, const float &left_eye_y) {
+        Mat image;
+        read_image(argc, argv, path_to_image, &image); // by default
+        show_image(image);
+        Mat new_image;
+        align_image(template_size, point(519, 1279), point(671, 1021), image, left_eye_x, left_eye_y, &new_image);
+        show_image(new_image);
     }
 
 } // namespace extractor
