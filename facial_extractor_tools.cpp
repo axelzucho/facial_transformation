@@ -117,30 +117,5 @@ namespace extractor {
     }
 
 
-    void example(int argc, char **argv, const string &path_to_image, const string &path_to_model, const rectangle &face,
-                 const Size &template_size, const float &left_eye_x, const float &left_eye_y) {
-        Mat image;
-        read_image(argc, argv, path_to_image,
-                   &image); // by default
-        full_object_detection shape;
-        face_landmark_detector(
-                path_to_model, face,
-                image, &shape);
-        Mat template_image;
-        point left_eye = get_average(shape.part(37), shape.part(40));
-        point right_eye = get_average(shape.part(43), shape.part(46));
-        align_image(template_size, left_eye, right_eye, image, left_eye_x, left_eye_y, &template_image);
-        show_image(template_image);
-    }
-
-    void hardcoded_example(int argc, char **argv, const string &path_to_image, const Size &template_size,
-                           const float &left_eye_x, const float &left_eye_y) {
-        Mat image;
-        read_image(argc, argv, path_to_image, &image); // by default
-        show_image(image);
-        Mat new_image;
-        align_image(template_size, point(519, 1279), point(671, 1021), image, left_eye_x, left_eye_y, &new_image);
-        show_image(new_image);
-    }
 
 } // namespace extractor

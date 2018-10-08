@@ -10,10 +10,10 @@ set (CMAKE_CXX_STANDARD 11)
 
 include(/home/axelzucho/Documents/dlib-19.15/dlib/cmake)
 
- set(SOURCE	
+ set(SOURCE	FaceAligner.cpp FaceDetector.cpp
     )
    
- set(HEADERS 
+ set(HEADERS FaceAligner.h FaceDetector.h
     )
 
 # automatic OpenCV finding
@@ -35,5 +35,5 @@ set(fr_include 	/usr/local/include
 
 include_directories(${fr_include})
 
-add_executable(fr main.cpp ${SOURCE} ${HEADERS})
+add_executable(fr main.cpp)
 target_link_libraries(fr ${OpenCV_LIBS} dlib::dlib)
