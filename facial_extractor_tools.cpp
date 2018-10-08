@@ -71,17 +71,6 @@ namespace extractor {
         }
     }
 
-    void face_landmark_detector(const string &path_to_model, const rectangle &face_rectangle, const Mat &mat_image,
-                                full_object_detection *shape) {
-        dlib::shape_predictor sp;
-        dlib::deserialize(path_to_model) >> sp;
-        dlib::array2d<rgb_pixel> dlib_image;
-        assign_image(dlib_image, cv_image<rgb_pixel>(mat_image));
-
-        *shape = sp(dlib_image, face_rectangle);
-        show_image_with_points(*shape, face_rectangle, mat_image);
-    }
-
     void read_image(int argc, char **argv, string image_path, Mat *image) {
         if (argc > 1) {
             image_path = argv[1];
@@ -92,30 +81,5 @@ namespace extractor {
             return;
         }
     }
-
-    void align_image(const Size &size, const point &left_eye_before, const point &right_eye_before, const Mat &image,
-                     const double &left_eye_after_x, const double &left_eye_after_y, Mat *template_image) {
-        long dx = right_eye_before.x() - left_eye_before.x();
-        long dy = right_eye_before.y() - left_eye_before.y();
-        double angle = atan2(dy, dx) * 180 / PI;
-
-        double right_eye_after_x = 1 - left_eye_after_x;
-        double distance_before = sqrt(dx * dx + dy * dy);
-        double desired_distance = right_eye_after_x - left_eye_after_x;
-        desired_distance *= size.width;
-        double scale = desired_distance / distance_before;
-
-        point center_between_eyes = get_average(left_eye_before, right_eye_before);
-        cv::Point2f center_between_eyes_f(center_between_eyes.x(), center_between_eyes.y());
-        Mat rotation_matrix = cv::getRotationMatrix2D(center_between_eyes_f, angle, scale);
-
-        double tx = (float) size.width / 2;
-        double ty = size.height * left_eye_after_y;
-        rotation_matrix.at<double>(0, 2) += tx - center_between_eyes.x();
-        rotation_matrix.at<double>(1, 2) += ty - center_between_eyes.y();
-        cv::warpAffine(image, *template_image, rotation_matrix, cv::Size(size.width, size.height), cv::INTER_CUBIC);
-    }
-
-
 
 } // namespace extractor
