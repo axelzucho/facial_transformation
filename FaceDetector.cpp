@@ -1,6 +1,8 @@
 #include "FaceDetector.h"
 #include "facial_extractor_tools.h"
 
+#include <dlib/opencv/cv_image.h>
+
 FaceDetector::FaceDetector(const string &path_to_model){
     dlib::deserialize(path_to_model) >> sp;
 }

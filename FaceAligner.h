@@ -1,16 +1,7 @@
 #ifndef FACIAL_TRANSFORMATION_FACEALIGNER_H
 #define FACIAL_TRANSFORMATION_FACEALIGNER_H
 
-#include <dlib/gui_widgets.h>
-#include <dlib/image_io.h>
-#include <dlib/image_processing.h>
 #include <dlib/image_processing/frontal_face_detector.h>
-#include <dlib/image_processing/render_face_detections.h>
-#include <dlib/opencv/cv_image.h>
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/imgproc.hpp>
 #include <opencv2/opencv.hpp>
 
 class FaceAligner {

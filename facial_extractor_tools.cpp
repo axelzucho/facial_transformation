@@ -2,17 +2,17 @@
 #include <string>
 #include <math.h>
 
-#include <dlib/gui_widgets.h>
-#include <dlib/image_io.h>
-#include <dlib/image_processing.h>
-#include <dlib/image_processing/frontal_face_detector.h>
 #include <dlib/image_processing/render_face_detections.h>
 #include <dlib/opencv/cv_image.h>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
-#include <opencv2/opencv.hpp>
+#include <dlib/gui_widgets.h>
+#include <dlib/image_io.h>
+#include <dlib/image_processing.h>
+
+#include "facial_extractor_tools.h"
 
 using namespace std;
 
@@ -30,8 +30,6 @@ using dlib::rectangle;
 using dlib::point;
 using dlib::load_image;
 using dlib::image_window;
-using dlib::bgr_pixel;
-using dlib::rgb_pixel;
 using dlib::full_object_detection;
 using dlib::assign_image;
 using dlib::cv_image;
@@ -40,7 +38,7 @@ using dlib::cv_image;
 
 namespace extractor {
 
-    static point get_average(const point &left, const point &right) {
+    dlib::point get_average(const dlib::point &left, const dlib::point &right) {
         point average((left.x() + right.x()) / 2, (left.y() + right.y()) / 2);
         return average;
     }
@@ -65,7 +63,7 @@ namespace extractor {
             }
 
             win.clear_overlay();
-            win.set_image(dlib::cv_image<bgr_pixel>(image));
+            win.set_image(dlib::cv_image<dlib::bgr_pixel>(image));
             win.add_overlay(points);
             win.add_overlay(face_rectangle);
         }

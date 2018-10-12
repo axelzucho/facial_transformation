@@ -1,16 +1,17 @@
 #ifndef FACIAL_EXTRACTOR_TOOLS_H
 #define FACIAL_EXTRACTOR_TOOLS_H
 
-#include "facial_extractor_tools.cpp"
+#include <opencv2/opencv.hpp>
+#include <dlib/image_processing/frontal_face_detector.h>
 
 namespace extractor {
-    static point get_average(const point &left, const point &right);
+    dlib::point get_average(const dlib::point &left, const dlib::point &right);
 
-    void show_image(const Mat &image);
+    void show_image(const cv::Mat &image);
 
-    void show_image_with_points(const full_object_detection &shape, const rectangle &face_rectangle, const Mat &image);
+    void show_image_with_points(const dlib::full_object_detection &shape, const dlib::rectangle &face_rectangle, const cv::Mat &image);
 
-    void read_image(int argc, char **argv, string image_path, Mat *image);
+    void read_image(int argc, char **argv, std::string image_path, cv::Mat *image);
 
     } // namespace extractor
 

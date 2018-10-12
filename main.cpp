@@ -1,6 +1,12 @@
 #include "facial_extractor_tools.h"
-#include "FaceAligner.cpp"
-#include "FaceDetector.cpp"
+#include "FaceAligner.h"
+#include "FaceDetector.h"
+
+using cv::Mat;
+using std::string;
+using dlib::full_object_detection;
+using cv::Size;
+using dlib::rectangle;
 
 void
 example(int argc, char **argv, const string &path_to_image, const string &path_to_model, const dlib::rectangle &face,
@@ -9,11 +15,11 @@ example(int argc, char **argv, const string &path_to_image, const string &path_t
     extractor::read_image(argc, argv, path_to_image,
                           &image); // by default
 
-    extractor::show_image(image);
     full_object_detection shape;
     FaceDetector faceDetector(path_to_model);
     faceDetector.GetFaceLandmark(face, image, &shape);
     Mat template_image;
+    extractor::show_image(image);
     FaceAligner faceAligner(template_size, left_eye_x, left_eye_y);
     faceAligner.AlignImage(shape, image, &template_image);
     extractor::show_image(template_image);
