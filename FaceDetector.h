@@ -10,8 +10,10 @@ using std::string;
 
 class FaceDetector {
 public:
-    FaceDetector(const string& path_to_model);
-    void GetFaceLandmark(const cv::Mat &image, const dlib::rectangle &face, dlib::full_object_detection* shape);
+    FaceDetector(const string &path_to_model);
+
+    void GetFaceLandmark(const dlib::array2d<dlib::bgr_pixel> &image, const dlib::rectangle &face,
+                         dlib::full_object_detection *shape);
 
 private:
     dlib::shape_predictor sp;

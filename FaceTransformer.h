@@ -14,7 +14,7 @@
 
 class FaceTransformer {
 public:
-    FaceTransformer(const string& path_to_model, const cv::Size& size, const double left_eye_after_x, const double left_eye_after_y);
+    FaceTransformer(const string& path_to_model, const unsigned int size, const double left_eye_after);
     void DetectAndAlign(const cv::Mat &image, const dlib::rectangle &face, cv::Mat* template_image);
 private:
     FaceDetector* face_detector_;
