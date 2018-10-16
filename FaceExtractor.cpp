@@ -1,17 +1,17 @@
-#include "FaceTransformer.h"
-#include "FaceDetector.h"
+#include "FaceExtractor.h"
+#include "FaceLandmarkDetector.h"
 #include "FaceAligner.h"
 #include "facial_extractor_tools.h"
 
 #include <dlib/image_processing/frontal_face_detector.h>
 #include <dlib/opencv.h>
 
-FaceTransformer::FaceTransformer(const string& path_to_model, const unsigned int size, const double left_eye_after){
-    face_detector_ = new FaceDetector(path_to_model);
+FaceExtractor::FaceExtractor(const string& path_to_model, const unsigned int size, const double left_eye_after){
+    face_detector_ = new FaceLandmarkDetector(path_to_model);
     face_aligner_ = new FaceAligner(size, left_eye_after);
 }
 
-void FaceTransformer::DetectAndAlign(const cv::Mat &image, const cv::Rect &face, cv::Mat& template_image){
+void FaceExtractor::DetectAndAlign(const cv::Mat &image, const cv::Rect &face, cv::Mat& template_image){
     dlib::full_object_detection shape;
     dlib::array2d<dlib::bgr_pixel> dlib_image;
     assign_image(dlib_image, dlib::cv_image<dlib::bgr_pixel>(image));

@@ -10,10 +10,10 @@ set (CMAKE_CXX_STANDARD 11)
 
 include(/home/axelzucho/Documents/dlib-19.15/dlib/cmake)
 
- set(HEADERS facial_extractor_tools.h FaceAligner.h FaceDetector.h FaceTransformer.h
+ set(HEADERS facial_extractor_tools.h FaceAligner.h FaceLandmarkDetector.h FaceExtractor.h
     )
 
-set(SOURCE	facial_extractor_tools.cpp FaceAligner.cpp FaceDetector.cpp FaceTransformer.cpp
+set(SOURCE	facial_extractor_tools.cpp FaceAligner.cpp FaceLandmarkDetector.cpp FaceExtractor.cpp
 		)
 
 # automatic OpenCV finding

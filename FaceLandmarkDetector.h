@@ -8,9 +8,9 @@
 
 using std::string;
 
-class FaceDetector {
+class FaceLandmarkDetector {
 public:
-    FaceDetector(const string &path_to_model);
+    FaceLandmarkDetector(const string &path_to_model);
 
     void GetFaceLandmark(const dlib::array2d<dlib::bgr_pixel> &image, const dlib::rectangle &face,
                          dlib::full_object_detection *shape);

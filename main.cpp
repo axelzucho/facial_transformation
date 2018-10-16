@@ -1,7 +1,7 @@
 #include "facial_extractor_tools.h"
 #include "FaceAligner.h"
-#include "FaceDetector.h"
-#include "FaceTransformer.h"
+#include "FaceLandmarkDetector.h"
+#include "FaceExtractor.h"
 
 using cv::Mat;
 using std::string;
@@ -16,7 +16,7 @@ example(int argc, char **argv, const string &path_to_image, const string &path_t
     extractor::read_image(argc, argv, path_to_image,
                           &image); // by default
 
-    FaceTransformer face_transformer(path_to_model, template_size, left_eye);
+    FaceExtractor face_transformer(path_to_model, template_size, left_eye);
     Mat template_image;
     face_transformer.DetectAndAlign(image, face, template_image);
     extractor::show_image(template_image);
