@@ -10,7 +10,7 @@ FaceTransformer::FaceTransformer(const string& path_to_model, const unsigned int
     face_aligner_ = new FaceAligner(size, left_eye_after);
 }
 
-void FaceTransformer::DetectAndAlign(const cv::Mat &image, const dlib::rectangle &face, cv::Mat* template_image){
+void FaceTransformer::DetectAndAlign(const cv::Mat &image, const dlib::rectangle &face, cv::Mat& template_image){
     dlib::full_object_detection shape;
     dlib::array2d<dlib::bgr_pixel> dlib_image;
     assign_image(dlib_image, dlib::cv_image<dlib::bgr_pixel>(image));

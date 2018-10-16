@@ -18,8 +18,8 @@ example(int argc, char **argv, const string &path_to_image, const string &path_t
 
     FaceTransformer face_transformer(path_to_model, template_size, left_eye);
     Mat template_image;
-    face_transformer.DetectAndAlign(image, face, &template_image);
-    //extractor::show_image(template_image);
+    face_transformer.DetectAndAlign(image, face, template_image);
+    extractor::show_image(template_image);
 }
 
 int main(int argc, char **argv) {
