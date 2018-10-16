@@ -38,6 +38,10 @@ using dlib::cv_image;
 
 namespace extractor {
 
+    dlib::rectangle opencv_rect_to_dlib(cv::Rect r){
+        return dlib::rectangle((long)r.tl().x, (long)r.tl().y, (long)r.br().x - 1, (long)r.br().y - 1);
+    }
+
     dlib::point get_average(const dlib::point &left, const dlib::point &right) {
         point average((left.x() + right.x()) / 2, (left.y() + right.y()) / 2);
         return average;

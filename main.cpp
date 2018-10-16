@@ -10,7 +10,7 @@ using cv::Size;
 using dlib::rectangle;
 
 void
-example(int argc, char **argv, const string &path_to_image, const string &path_to_model, const dlib::rectangle &face,
+example(int argc, char **argv, const string &path_to_image, const string &path_to_model, const cv::Rect &face,
         const unsigned int template_size, const float &left_eye) {
     Mat image;
     extractor::read_image(argc, argv, path_to_image,
@@ -25,7 +25,7 @@ example(int argc, char **argv, const string &path_to_image, const string &path_t
 int main(int argc, char **argv) {
     string path_to_image = "/home/axelzucho/Documents/Github/facial_transformation/images/Cara1.jpeg";
     string path_to_model = "/home/axelzucho/Documents/Github/facial_transformation/shape_predictor_5_face_landmarks.dat";
-    rectangle face(330, 320, 640, 630);
+    cv::Rect face(330, 320, 310, 310);
     unsigned int template_size = 500;
     float left_eye = 0.3;
     example(argc, argv, path_to_image, path_to_model, face, template_size, left_eye);
