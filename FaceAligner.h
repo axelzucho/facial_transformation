@@ -16,6 +16,7 @@ class FaceAligner {
 public:
     FaceAligner(const string& path_to_model, const unsigned int size, const double left_eye_after);
     void DetectAndAlign(const cv::Mat &image, const cv::Rect &face, cv::Mat &template_image);
+    ~FaceAligner();
 private:
     FaceLandmarkDetector* face_detector_;
     Aligner* aligner_;

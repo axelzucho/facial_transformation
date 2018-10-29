@@ -20,6 +20,11 @@ void FaceAligner::DetectAndAlign(const cv::Mat &image, const cv::Rect &face, cv:
     aligner_->AlignImage(shape, dlib_image, template_image);
 }
 
+FaceAligner::~FaceAligner() {
+    delete(face_detector_);
+    delete(aligner_);
+}
+
 //
 // Created by axelzucho on 15/10/18.
 //
