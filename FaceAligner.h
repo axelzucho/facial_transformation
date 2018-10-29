@@ -1,17 +1,24 @@
-#ifndef FACIAL_TRANSFORMATION_FACEALIGNER_H
-#define FACIAL_TRANSFORMATION_FACEALIGNER_H
+//
+// Created by axelzucho on 15/10/18.
+//
 
-#include <dlib/image_processing/frontal_face_detector.h>
-#include <opencv2/opencv.hpp>
+#ifndef FACIAL_TRANSFORMATION_FACETRANSFORMER_H
+#define FACIAL_TRANSFORMATION_FACETRANSFORMER_H
+
+#include "Aligner.h"
+#include "FaceLandmarkDetector.h"
+
+#include <dlib/gui_widgets.h>
+#include <dlib/image_processing.h>
+#include <opencv2/core/core.hpp>
 
 class FaceAligner {
 public:
-    FaceAligner(const unsigned int size, const double left_eye_after);
-    void AlignImage(const dlib::full_object_detection &shape, dlib::array2d<dlib::bgr_pixel>& image, cv::Mat &template_image);
-
+    FaceAligner(const string& path_to_model, const unsigned int size, const double left_eye_after);
+    void DetectAndAlign(const cv::Mat &image, const cv::Rect &face, cv::Mat &template_image);
 private:
-    unsigned int size_;
-    double left_eye_after_;
+    FaceLandmarkDetector* face_detector_;
+    Aligner* aligner_;
 };
 
-#endif //FACIAL_TRANSFORMATION_FACEALIGNER_H
+#endif //FACIAL_TRANSFORMATION_FACETRANSFORMER_H
