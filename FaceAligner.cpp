@@ -6,6 +6,11 @@
 #include <dlib/image_processing/frontal_face_detector.h>
 #include <dlib/opencv.h>
 
+FaceAligner::FaceAligner(){
+    face_detector_= new FaceAligner("../shape_predictor_5_face_landmarks.dat");
+    aligner_ = new Aligner(150, 0.2);
+}
+
 FaceAligner::FaceAligner(const string& path_to_model, const unsigned int size, const double left_eye_after){
     face_detector_ = new FaceLandmarkDetector(path_to_model);
     aligner_ = new Aligner(size, left_eye_after);
